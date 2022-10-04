@@ -3,13 +3,16 @@
 
 
 <li class="nav-item">
-            <a href="" class="nav-link ">
-              <i class="nav-icon fas fa-home"></i>
-              <p>
-                Accueil
-              </p>
-            </a>
+      <a href="" class="nav-link ">
+        <i class="nav-icon fas fa-home"></i>
+         <p>
+           Accueil
+        </p>
+      </a>
 </li>
+
+@can("manager")
+
 <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -33,6 +36,9 @@
               </li>
             </ul>
           </li>
+@endcan
+
+@can("admin")
 
 <li class="nav-item">
             <a href="#" class="nav-link">
@@ -44,7 +50,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item ">
-     <a href="" class="nav-link" >
+     <a href="{{route('utilisateurs')}}" class="nav-link" >
                   <i class=" nav-icon fas fa-users-cog"></i>
                   <p>Utilisateurs</p>
                 </a>
@@ -87,7 +93,9 @@
               </li>
             </ul>
           </li>
+@endcan
 
+@can("employe")
 <li class="nav-header">LOCATION</li>
           <li class="nav-item">
             <a href="" class="nav-link">
@@ -115,6 +123,6 @@
               </p>
             </a>
           </li>
-
+@endcan
 </ul>
 </nav>
