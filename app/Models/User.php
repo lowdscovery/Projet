@@ -61,4 +61,8 @@ class User extends Authenticatable
     public function hasAnyRoles($roles){
         return $this->roles()->whereIn("nom", $roles)->first() !==null;
       }
+
+    public function getAllRoleNamesAttribute(){
+        return $this->roles->implode("nom", ' | ');
+    }
 }
