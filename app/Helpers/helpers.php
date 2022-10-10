@@ -1,6 +1,16 @@
 <?php
  
  use Illuminate\Support\Str;
+
+
+//modification
+define("PAGELIST", "liste");
+define("PAGECREATEFORM", "create");
+define("PAGEEDITFORM", "edit");
+
+define("DEFAULTPASSWORD", "password");
+
+
 function userFullName(){
     return auth()->user()->prenom . " " . auth()->user()->nom;
 }
