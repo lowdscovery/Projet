@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\TypeArticleComp;
 use App\Http\Livewire\Utilisateurs;
 use App\Models\Article;
 use App\Models\TypeArticle;
@@ -28,10 +29,20 @@ Route::group([
 "middleware"=> ["auth", "auth.admin"],
 "as" => "admin."
 ], function(){
+
     Route::group([
         "prefix"=> "habilitations",
         "as" => "habilitations."
     ], function(){
        Route::get("/utilisateurs", Utilisateurs::class)->name("users.index");
     });
+
+    Route::group([
+        "prefix"=> "gestarticles",
+        "as" => "gestarticles."
+    ], function(){
+       Route::get("/typearticles", TypeArticleComp::class)->name("typearticles");
+    });
+
 });
+

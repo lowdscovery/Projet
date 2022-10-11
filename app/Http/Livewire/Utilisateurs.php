@@ -40,7 +40,7 @@ class Utilisateurs extends Component
     {
         Carbon::setLocale("fr");
         return view('livewire.utilisateurs.index',[
-            "users"=> User::latest()->paginate(3)
+            "users"=> User::latest()->paginate(6)
         ])
        
         ->extends("layouts.master") 

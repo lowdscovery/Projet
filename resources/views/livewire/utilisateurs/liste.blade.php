@@ -1,7 +1,7 @@
 <div class="row p-4 pt-5">
 <div class="col-md-12">
 <div class="card">
-<div class="card-header bg-gradient-primary d-flex align-items-center">
+<div class="card-header bg-gradient-primary  align-items-center">
 <h3 class="card-title flex-grow-1"><i class="fas fa-users fa-2x"></i>Liste des utilisateurs</h3>
 
 <div class="card-tools d-flex align-items-center">
@@ -17,7 +17,7 @@
 </div>
 </div>
 
-<div class="card-body table-responsive p-0 table-striped" style="height: 300px;">
+<div class="card-body table-responsive p-0 table-striped" style="height: 450px; width:1260px;">
 <table class="table table-head-fixed">
 <thead>
 <tr>
