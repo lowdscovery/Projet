@@ -14,6 +14,19 @@
 
 </div>
 
+ <script>
+        window.addEventListener("showSuccessMessage",event=>{
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            toast:true,
+            title: event.detail.message || 'Opération effectuée avec succès!',
+            showConfirmButton: false,
+            timer: 3000
+        })
+    })
+      </script>
+
 <script> 
     window.addEventListener("showConfirmMessage",event=>{
         Swal.fire({
@@ -24,24 +37,16 @@
   confirmButtonColor: '#3085d6',
   cancelButtonColor: '#d33',
   confirmButtonText: 'Continuer',
-  cancelButtonText: 'Annuler',
+  cancelButtonText: 'Annuler'
           }).then((result) => {
   if (result.isConfirmed) {
-     @this.deleteUser(event.detail.message.data.user_id)
+    if(event.detail.message.data){
+ @this.deleteUser(event.detail.message.data.user_id)
+    }
+  @this.resetPassword()
 }
-    @this.resetPassword()
+  
      })
     })
     </script>
-     <script>
-        window.addEventListener("showSuccessMessage",event=>{
-        Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            toast:true,
-            title: event.detail.message || 'Opération effectuée avec succès!',
-            showConfirmButton: false,
-            time: 3000
-        })
-    })
-      </script>
+    

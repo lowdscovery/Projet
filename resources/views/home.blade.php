@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-12 p-4">
         <div class="jumbotron ">
-                <h2 class="display-3">Bienvenu, <strong>{{userFullName()}}</strong></h2>
+                <h2 class="display-3">Bienvenu! <strong>{{userFullName()}}</strong></h2>
                 @foreach(auth()->user()->roles as $role)
                 <p>{{$role->nom}}</p>
                 @endforeach

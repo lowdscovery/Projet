@@ -22,7 +22,8 @@ class Utilisateurs extends Component
 
     //modification
     public $currentPage = PAGELIST;
-
+    
+    public $search="";
     public $newUser = [];
     public $editUser = [];
     public $rolePermissions=[];
@@ -39,10 +40,15 @@ class Utilisateurs extends Component
     public function render()
     {
         Carbon::setLocale("fr");
-        return view('livewire.utilisateurs.index',[
+        $searchCriteria = "%".$this->search."%";
+       $data=[
+        "users"=> User::where("nom", "like", $searchCriteria)->latest()->paginate(6)
+       ];
+
+      /*  return view('livewire.utilisateurs.index',[
             "users"=> User::latest()->paginate(6)
-        ])
-       
+        ])*/
+        return view('livewire.utilisateurs.index', $data)
         ->extends("layouts.master") 
         ->section("contenu");
     }
@@ -130,7 +136,7 @@ class Utilisateurs extends Component
                 User::find($this->editUser["id"])->permissions()->attach($permission["permission_id"]);
             }
         }
-        $this->dispatchBrowserEvent("showSuccessMessage", ["message"=>"Role et permissions mis à jour avec succès!"]);
+   $this->dispatchBrowserEvent("showSuccessMessage", ["message"=>"Role et permissions mis à jour avec succès!"]);
     }
 
     public function goToListUser(){

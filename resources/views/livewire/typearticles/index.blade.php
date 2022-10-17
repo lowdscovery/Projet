@@ -1,75 +1,9 @@
 <div>
 
-<div class="row p-4 pt-5">
-<div class="col-md-12">
-<div class="card">
-<div class="card-header bg-gradient-primary  align-items-center">
-<h3 class="card-title flex-grow-1"><i class="fa fa-list fa-2x"></i>Liste des types d'articles</h3>
+ @include("livewire.typearticles.editProp") 
+ @include("livewire.typearticles.addProp") 
+ @include("livewire.typearticles.list") 
 
-<div class="card-tools d-flex align-items-center">
-<a class="btn btn-link text-white mr-4 d-block" wire:click="toggleShowAddTypeArticleForm"><i class="fas fa-user-plus"></i>Nouveau type d'article</a>
-<div class="input-group input-group-md" style="width: 250px;">
-<input type="text" name="table_search" wire:model.debounce.250ms="search" class="form-control float-right" placeholder="Search">
-<div class="input-group-append">
-<button type="submit" class="btn btn-default">
-<i class="fas fa-search"></i>
-</button>
-</div>
-</div>
-</div>
-</div>
-
-<div class="card-body table-responsive p-0 table-striped"  style="height: 450px; width:1260px;">
-<table class="table table-head-fixed">
-<thead>
-<tr>
-
-<th style="width: 30%;">Type d'article</th>
-<th style="width: 40%;" class="text-center">Ajouté</th>
-<th style="width: 30%;" class="text-center">Action</th>
-</tr>
-</thead>
-<tbody>
-@if ($isAddTypeArticle)
-    <tr>
-      <td colspan="2">
-        <input type="text" class="form-control  
-        @error('newTypeArticleName') is-invalid @enderror" 
-        wire:keydown.enter="addTypeArticle"
-        wire:model="newTypeArticleName"/>
-
-        @error('newTypeArticleName')
-           <span class="text-danger">{{$message}}</span>
-        @enderror
-      </td>
-      <td class="text-center">
-       <button class="btn btn-link" wire:click="addTypeArticle"><i class="fa fa-check"></i>Valider</button>
-       <button class="btn btn-link" wire:click="toggleShowAddTypeArticleForm"><i class="far fa-trash-alt"></i>Annuler</button>
-      </td>
-    </tr>
-@endif
-@foreach ( $typearticles as $typearticle)
-    <tr>
-     <td>{{ $typearticle->nom}}</td>
-     <td class="text-center">{{ optional($typearticle->created_at)->diffForHumans()}}</td>
-     <td class="text-center">
-       <button class="btn btn-link" wire:click="editTypeArticle({{$typearticle->id}})"><i class="far fa-edit"></i></button>
-       <button class="btn btn-link" wire:click="confirmDelete('{{$typearticle->nom}}', {{$typearticle->id}})"><i class="far fa-trash-alt"></i></button>
-      </td>
-   </tr>
-@endforeach
-</tbody>
-</table>
-</div>
-<div class="card-footer">
-<div class="float-right">
-{{ $typearticles->links()}}
-</div>
-</div>
-</div>
-
-</div>
-</div>
 </div>
 <script> 
     window.addEventListener("showEditForm",function(e){
@@ -117,8 +51,33 @@
   cancelButtonText: 'Annuler'
           }).then((result) => {
   if (result.isConfirmed) {
-     @this.deleteTypeArticle(event.detail.message.data.type_article_id)
+    if(event.detail.message.data.type_article_id){
+   @this.deleteTypeArticle(event.detail.message.data.type_article_id)
+    }
+    if(event.detail.message.data.propriete_id){
+   @this.deleteProp(event.detail.message.data.propriete_id)
+    }
 }
      })
     })
     </script>
+
+<script>
+  window.addEventListener("showModal", event=>{
+      $("#exampleModal").modal("show")
+    })
+    window.addEventListener("closeModal", event=>{
+      $("#exampleModal").modal("hide")
+    })
+
+     window.addEventListener("showEditModal", event=>{
+      $("#editModalProp").modal("show")
+    })
+    window.addEventListener("closeEditModal", event=>{
+      $("#editModalProp").modal("hide")
+    })
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
