@@ -19,5 +19,12 @@ class TypeArticleTableSeeder extends Seeder
             ["nom"=> "Appareil"],
             ["nom"=> "Salle"]
         ]);
+        DB::table("propriete_articles")->insert([
+            ["nom"=> "Marque","type_article_id"=>1],
+            ["nom"=> "Kilometrage","type_article_id"=>1],
+            ["nom"=> "Prix","type_article_id"=>2],
+            ["nom"=> "Libelle","type_article_id"=>2],
+            ["nom"=> "Marque","type_article_id"=>3]
+        ]);
     }
 }
