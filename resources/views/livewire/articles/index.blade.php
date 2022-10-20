@@ -1,6 +1,8 @@
 <div>
+@if($editArticle != [])
+   @include("livewire.articles.edit") 
+@endif
 
- @include("livewire.articles.edit") 
  @include("livewire.articles.add") 
  @include("livewire.articles.list") 
 
@@ -56,10 +58,10 @@
     })
 
      window.addEventListener("showEditModal", event=>{
-      $("#editModalProp").modal("show")
+      $("#editModal").modal("show")
     })
     window.addEventListener("closeEditModal", event=>{
-      $("#editModalProp").modal("hide")
+      $("#editModal").modal("hide")
     })
 </script>
 

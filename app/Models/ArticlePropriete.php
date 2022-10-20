@@ -12,4 +12,8 @@ class ArticlePropriete extends Model
     public $fillable= [
        "article_id", "propriete_article_id", "valeur"
     ];
+
+    public function propriete(){
+        return $this->hasOne(ProprieteArticle::class, 'id', 'propriete_article_id');
+    }
 }

@@ -21,7 +21,16 @@ class ArticleComp extends Component
     public $addArticle=[];
     public $proprietesArticles=null;
     public $addPhoto=null;
+    public $editPhoto=null;
     public $inputFileIterator=0;
+    public $editArticle=[];
+    //modification
+    public $rules = [
+       'editArticle.nom'=> 'required',
+       'editArticle.noSerie'=> 'required',
+       'editArticle.type_article_id'=> 'required',
+       'editArticle.article_proprietes.*.valeur'=> 'required',
+    ];
 
     public function render()
     {
@@ -59,12 +68,20 @@ class ArticleComp extends Component
         $this->addPhoto=null;
         $this->inputFileIterator++;
         $this->dispatchBrowserEvent("showModal");
+        
     }
     public function closeModal(){
         $this->dispatchBrowserEvent("closeModal");
     }
-    public function editArticle(Article $article){
+    
+    public function closeEditModal(){
+        $this->dispatchBrowserEvent("closeEditModal");
+    }
 
+    public function editArticle($articleId){
+        $this->editArticle=Article::with("article_proprietes","article_proprietes.propriete","type")->find($articleId)->toArray();
+      //  dd( $this->editArticle);
+        $this->dispatchBrowserEvent("showEditModal");
     }
     public function confirmDelete(Article $article){
 
@@ -101,12 +118,13 @@ class ArticleComp extends Component
         //validation des erreurs
         $validatedData=$this->validate($validateArr, $customErrMessages);
 
-        //image
-        $imagePath="";
+        //par defaut une image index
+        $imagePath="images/index.jpg";
         if($this->addPhoto != null){
-          $imagePath= $this->addPhoto->store('upload', 'public');
+          $path= $this->addPhoto->store('upload', 'public');
+          $imagePath="storage/".$path;
            //reduire image en upload
-       //   $image= Image::make(public_path("storage/".$imagePath))->fit(200, 200);
+       //   $image= Image::make(public_path($imagePath))->fit(200, 200);
            // $image->save();
         }
 

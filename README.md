@@ -11,6 +11,7 @@ La solution permet  notamment:
 - Gestion des opérations des caisses;
 - Gestion des recouvrements;
 - Le reporting.
+-base de donnée : larave
 
 ## License
 
