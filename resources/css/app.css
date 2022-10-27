@@ -6,3 +6,8 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+a.btn.btn-db{
+    background-color: #0069d9 !important;
+    border-color: #0062cc !important;
+}

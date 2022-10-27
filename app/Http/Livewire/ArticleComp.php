@@ -7,10 +7,12 @@ use App\Models\ArticlePropriete;
 use App\Models\TypeArticle;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-//use Intervention\Image\Facades\Image;
+//use app\Http\Livewire\Image;
+use Intervention\Image\Facades\Image;
 
 class ArticleComp extends Component
 {
@@ -23,14 +25,38 @@ class ArticleComp extends Component
     public $addPhoto=null;
     public $editPhoto=null;
     public $inputFileIterator=0;
+    public $inputEditFileIterator=0;
     public $editArticle=[];
+     //cacher le bouton modifier
+    public $editHasChanged;
+    public $editArticleOldValues=[];
     //modification
-    public $rules = [
-       'editArticle.nom'=> 'required',
-       'editArticle.noSerie'=> 'required',
-       'editArticle.type_article_id'=> 'required',
-       'editArticle.article_proprietes.*.valeur'=> 'required',
-    ];
+    protected function rules (){
+        return[
+            'editArticle.nom'=> ["required", Rule::unique("articles", "nom")->ignore($this->editArticle["id"])],
+            'editArticle.noSerie'=> ["required", Rule::unique("articles", "noSerie")->ignore($this->editArticle["id"])],
+            'editArticle.type_article_id'=> 'required',
+            'editArticle.article_proprietes.*.valeur'=> 'required',
+        ];
+    }
+
+    function showUpadteButton(){
+        $this->editHasChanged=false;
+
+        foreach ($this->editArticleOldValues["article_proprietes"] as $index => $editArticleOld) {
+            if($this->editArticle["article_proprietes"][$index]["valeur"] != $editArticleOld["valeur"]){
+                $this->editHasChanged=true;
+            }
+        }
+        if(
+            $this->editArticle["nom"] != $this->editArticleOldValues["nom"] ||
+            $this->editArticle["noSerie"] != $this->editArticleOldValues["noSerie"] ||
+            $this->editPhoto !=null
+        ){
+            $this->editHasChanged=true;
+        }
+        
+    }
 
     public function render()
     {
@@ -39,15 +65,23 @@ class ArticleComp extends Component
         $articleQuery=Article::query();
 
         if($this->search != ""){
+            $this->resetPage();
             $articleQuery->where("nom","LIKE", "%". $this->search ."%")
                          ->orWhere("noSerie","LIKE", "%". $this->search ."%");
         }
         //filtre
         if($this->filtreType != ""){
+            $this->resetPage();
             $articleQuery->where("type_article_id",$this->filtreType);
         }
         if($this->filtreEtat != ""){
+            $this->resetPage();
             $articleQuery->where("estDisponible",$this->filtreEtat);
+        }
+
+        //button cache
+        if ($this->editArticle != []) {
+            $this->showUpadteButton();
         }
 
 
@@ -75,16 +109,41 @@ class ArticleComp extends Component
     }
     
     public function closeEditModal(){
+        $this->editPhoto=null;
+        $this->editHasChanged=false;
         $this->dispatchBrowserEvent("closeEditModal");
     }
 
     public function editArticle($articleId){
         $this->editArticle=Article::with("article_proprietes","article_proprietes.propriete","type")->find($articleId)->toArray();
-      //  dd( $this->editArticle);
         $this->dispatchBrowserEvent("showEditModal");
+     //bouton cache
+        $this->editArticleOldValues = $this->editArticle; 
+        $this->editPhoto=null; 
+        $this->inputEditFileIterator++;
     }
     public function confirmDelete(Article $article){
+        $this->dispatchBrowserEvent("showConfirmMessage", ["message"=> [
+            "text"=> "Vous êtes sur le point de supprimer ". $article->nom ." de la liste des articles.Voulez-vous continuer?",
+            "title"=> "Êtes-vous sûr de continuer?",
+            "type" => "warning",
+            "data"=>[
+                "article_id"=>$article->id
+            ]
+        ]]);
+    }
 
+    public function deleteArticle(Article $article){
+      if(count($article->locations)>0) return;
+      //supprimer la relation
+      if(count($article->article_proprietes)> 0)
+      $article->article_proprietes()->where("article_id", $article->id)->delete();
+
+      if(count($article->tarification)> 0)
+      $article->tarification()->where("article_id", $article->id)->delete();
+
+      $article->delete();
+      $this->dispatchBrowserEvent("showSuccessMessage", ["message"=>"Article supprimer avec succès!"]);
     }
 
     public function updated($property){
@@ -92,11 +151,39 @@ class ArticleComp extends Component
         $this->proprietesArticles=optional(TypeArticle::find($this->addArticle["type"]))->proprietes;
        }
     }
+    public function updateArticle(){
+        $this->validate();
+        $article=Article::find( $this->editArticle["id"]);
+        $article->fill( $this->editArticle);
+        if ( $this->editPhoto !=null) {
+            $path =  $this->editPhoto->store("upload", "public");
+            $imagePath = "storage/".$path;
+           $image=Image::make(public_path($imagePath))->fit(200, 200);
+
+            $image->save();
+
+            Storage::disk("local")->delete(str_replace("storage/", "public/", $article->imageUrl));
+
+            $article->imageUrl = $imagePath;
+        }
+        $article->save();
+
+       /* collect($this->editArticle["article_proprietes"])
+        ->each(
+                fn($item) => ArticlePropriete::where([
+                    "article_id" => $item["article_id"],
+                    "propriete_article_id" => $item["propriete_article_id"]
+                ])->update(["valeur" => $item["valeur"]])
+            );*/
+
+        $this->dispatchBrowserEvent("showSuccessMessage", ["message"=>"Article mis à jour avec succès!"]);
+        $this->dispatchBrowserEvent("closeEditModal");
+    }
 
     public function ajoutArticle(){
         $validateArr = [
-            "addArticle.nom"=> "string|min:3|required",
-            "addArticle.noSerie"=> "string|max:50|min:3|required",
+            "addArticle.nom"=> "string|min:3|required|unique:articles,nom",
+            "addArticle.noSerie"=> "string|max:50|min:3|required|unique:articles,noSerie",
             "addArticle.type"=> "required",
             "addPhoto"=>"image|max:10240"
         ];

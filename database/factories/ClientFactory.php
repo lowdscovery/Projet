@@ -27,6 +27,7 @@ class ClientFactory extends Factory
             "adresse"=> $this->faker->address,
             "telephone1"=> $this->faker->phoneNumber,
             "telephone2"=> $this->faker->phoneNumber,
+            "email"=> $this->faker->email,
             "pieceIdentite"=> array_rand(["CIN", "PASSEPORT", "PERMIS DE CONDUIRE"], 1),
             "noPieceIdentite"=> $this->faker->creditCardNumber,
 

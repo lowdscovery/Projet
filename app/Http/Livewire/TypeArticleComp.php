@@ -29,12 +29,15 @@ class TypeArticleComp extends Component
     {
     Carbon::setLocale("fr");
     $searchCriteria = "%".$this->search."%";
-       $data=[
+
+      $this->resetPage();
+       $data=[     
         //variable articles, proprietestypeArticle et model TypeArticle
         "typearticles"=>TypeArticle::where("nom", "like", $searchCriteria)->latest()->paginate(6,["*"], "art"),
         //propriete article
         "proprietesTypeArticles"=>ProprieteArticle::where("type_article_id",optional( $this->selectedTypeArticle)->id)->paginate(2, ["*"], "pro")
        ];
+      
 
         return view('livewire.typearticles.index', $data)
         ->extends("layouts.master")

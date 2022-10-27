@@ -41,6 +41,7 @@ class Utilisateurs extends Component
     {
         Carbon::setLocale("fr");
         $searchCriteria = "%".$this->search."%";
+        //$this->resetPage();
        $data=[
         "users"=> User::where("nom", "like", $searchCriteria)->latest()->paginate(6)
        ];

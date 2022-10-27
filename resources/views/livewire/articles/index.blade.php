@@ -7,11 +7,7 @@
  @include("livewire.articles.list") 
 
 </div>
-<script> 
-    window.addEventListener("showEditForm",function(e){
-       
-    })
-    </script>
+
    <script>
         window.addEventListener("showSuccessMessage",event=>{
         Swal.fire({
@@ -38,11 +34,9 @@
   cancelButtonText: 'Annuler'
           }).then((result) => {
   if (result.isConfirmed) {
-    if(event.detail.message.data.type_article_id){
- 
-    }
-    if(event.detail.message.data.propriete_id){
-  
+    const article_id = event.detail.message.data.article_id
+    if(article_id){
+     @this.deleteArticle(article_id)
     }
 }
      })

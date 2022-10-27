@@ -5,7 +5,7 @@
         <div class="modal-header">
         <h5 class="modal-title">Modifier d'un article</h5>
         </div>
-       <form wire:submit.prevent="ajoutArticle">
+       <form wire:submit.prevent="updateArticle">
       <div class="modal-body">
       <div class="d-flex">
         <div class=" my-4 bg-gray-light p-3 flex-grow-1" >
@@ -47,7 +47,7 @@
     <label for="">{{$articlePropriete["propriete"]["nom"]}} @if ($articlePropriete["propriete"]["estObligatoire"]) (Requis)  @else (Optionel) @endif
     </label>
           
-                 <input type="text" class="form-control" wire:model="editArticle.article_proprietes.{{$index}}.valeur">
+            <input type="text" class="form-control" wire:model="editArticle.article_proprietes.{{$index}}.valeur">
              </div>
              @endforeach
             </div> 
@@ -57,7 +57,7 @@
         </div> 
         <div class="p-4" >
          <div class="form-group">
-           <input type="file" wire:model="editPhoto" id="image{{$inputFileIterator}}">
+           <input type="file" id="image{{$inputEditFileIterator}}" wire:model="editPhoto">
          </div>
         <div style="border:1px solid #d0d1d3; border-radius: 20px; height:200px; width:200px; overflow:hidden;">
 
@@ -66,14 +66,21 @@
           @else
             <img src="{{asset($editArticle["imageUrl"])}}" style="height:200px; width:200px;">
           @endif
-
+    
         </div>
+        @isset($editPhoto)
+            <button type="button" class="btn btn-default btn-sm mt-2" wire:click="$set('editPhoto', null)">Reinitialiser</button>
+        @endisset
         </div>
         </div>   
       </div>
       
       <div class="modal-footer">
-      <button type="submit" class="btn btn-success">Valider les modifications</button>
+       <div> 
+        @if ($editHasChanged)
+         <button type="submit" class="btn btn-success">Valider les modifications</button>
+      @endif
+       </div>   
         <button type="button" class="btn btn-danger" wire:click="closeEditModal">Fermer</button>
       </div>
        </form>
